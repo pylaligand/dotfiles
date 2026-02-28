@@ -56,15 +56,10 @@ esac
 
 section "Symlinking dotfiles"
 
-# for file in .zshrc .gitignore_global .editorconfig; do
-#     ln -sf "$DOTFILES_DIR/$file" "$HOME/$file"
-#     echo "  $file -> $DOTFILES_DIR/$file"
-# done
-
-# Symlink directories
-for dir in .claude; do
-    ln -sfn "$DOTFILES_DIR/$dir" "$HOME/$dir"
-    echo "  $dir -> $DOTFILES_DIR/$dir"
+for file in .claude/CLAUDE.md; do
+    mkdir -p "$(dirname "$HOME/$file")"
+    ln -sf "$DOTFILES_DIR/$file" "$HOME/$file"
+    echo "  $file -> $DOTFILES_DIR/$file"
 done
 
 # Starship config (XDG)
