@@ -1,0 +1,19 @@
+// Specification: https://aka.ms/devcontainer.json.
+{
+    "name": "My lovely container",
+    "image": "mcr.microsoft.com/devcontainers/base:noble", // Ubuntu 24.04
+    "features": {
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "timonwong.shellcheck"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "files.trimFinalNewlines": true,
+                "files.trimTrailingWhitespace": true
+            }
+        }
+    }
+}
