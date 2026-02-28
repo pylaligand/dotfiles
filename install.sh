@@ -74,7 +74,16 @@ if [ "$(basename "$SHELL")" != "bash" ]; then
     run chsh -s "$(command -v bash)" "$USER"
 fi
 
-# TODO: add bashrc extensions.
+section "Configuring bash"
+if [ -f "$HOME/.bashrc" ]; then
+    if ! grep -q "source $DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"; then
+        echo "source $DOTFILES_DIR/.my.bashrc" >> "$HOME/.bashrc"
+        echo "  Added include line to .bashrc"
+    fi
+else
+    ln -sf "$DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"
+    echo "  Added .bashrc"
+fi
 
 section "Done"
 echo "Please restart your shell."
