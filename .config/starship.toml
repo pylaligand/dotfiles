@@ -9,6 +9,7 @@ add_newline = true
 format = """
 $directory\
 $git_branch\
+$kubernetes\
 $character"""
 
 [character]
@@ -23,3 +24,7 @@ style = "bold blue"
 [git_branch]
 format = "\\([$branch]($style)\\) "
 style = "bold red"
+
+[kubernetes]
+disabled = false
+format = '[$symbol$context]($style) '
