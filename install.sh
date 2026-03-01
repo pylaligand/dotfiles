@@ -63,9 +63,9 @@ for file in .claude/CLAUDE.md; do
 done
 
 # Starship config (XDG)
-# mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}"
-# ln -sf "$DOTFILES_DIR/.config/starship.toml" "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
-# echo "  starship.toml -> $DOTFILES_DIR/.config/starship.toml"
+mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}"
+ln -sf "$DOTFILES_DIR/.config/starship.toml" "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
+echo "  starship.toml -> $DOTFILES_DIR/.config/starship.toml"
 
 # ── Set default shell ────────────────────────────────────────────
 
