@@ -10,6 +10,7 @@ format = """
 $directory\
 $git_branch\
 $kubernetes\
+$cmd_duration\
 $character"""
 
 [character]
@@ -28,3 +29,7 @@ style = "bold red"
 [kubernetes]
 disabled = false
 format = '[$symbol$context]($style) '
+
+[cmd_duration]
+format = "[$duration]($style) "
+style = "bold yellow"
