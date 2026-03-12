@@ -1,0 +1,9 @@
+[alias]
+    po = "push origin HEAD"
+    pof = "push --force origin HEAD"
+
+[core]
+    excludesFile = ~/.my.gitignore
+
+[rebase]
+    autoStash = true
