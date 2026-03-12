@@ -1,6 +1,7 @@
 [alias]
     po = "push origin HEAD"
     pof = "push --force origin HEAD"
+    nb = "!f() { git checkout -b $1 origin/main; }; f"
 
 [core]
     excludesFile = ~/.my.gitignore
