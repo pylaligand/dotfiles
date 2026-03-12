@@ -56,11 +56,21 @@ esac
 
 section "Symlinking dotfiles"
 
-for file in .claude/CLAUDE.md; do
+for file in .claude/CLAUDE.md .my.gitignore; do
     mkdir -p "$(dirname "$HOME/$file")"
     ln -sf "$DOTFILES_DIR/$file" "$HOME/$file"
     echo "  $file -> $DOTFILES_DIR/$file"
 done
+
+# gitconfig uses [include] instead of symlink so `git config --global` works normally
+# Remove old symlink from previous bootstrap if present
+if [ -L "$HOME/.gitconfig" ]; then
+    rm "$HOME/.gitconfig"
+fi
+if ! grep -q "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig" 2>/dev/null; then
+    printf '[include]\n    path = %s/.gitconfig\n' "$DOTFILES_DIR" >>"$HOME/.gitconfig"
+    echo "  .gitconfig -> included $DOTFILES_DIR/.gitconfig"
+fi
 
 # Starship config (XDG)
 mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}"
