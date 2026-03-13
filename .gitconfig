@@ -1,7 +1,8 @@
 [alias]
+    lo = "log --oneline --decorate"
+    nb = "!git checkout -b $1 origin/main #"
     po = "push origin HEAD"
     pof = "push --force origin HEAD"
-    nb = "!git checkout -b $1 origin/main #"
 
 [core]
     excludesFile = ~/.my.gitignore
