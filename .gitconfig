@@ -3,6 +3,7 @@
     nb = "!git checkout -b $1 origin/main #"
     po = "push origin HEAD"
     pof = "push --force origin HEAD"
+    st = "show HEAD --stat --format=''"
 
 [core]
     excludesFile = ~/.my.gitignore
