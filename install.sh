@@ -82,12 +82,13 @@ echo "  starship.toml -> $DOTFILES_DIR/.config/starship.toml"
 
 # ── Set default shell ────────────────────────────────────────────
 
+section "Configuring bash"
+
 if [ "$(basename "$SHELL")" != "bash" ]; then
     section "Setting bash as default shell"
     run chsh -s "$(command -v bash)" "$USER"
 fi
 
-section "Configuring bash"
 if [ -f "$HOME/.bashrc" ]; then
     if ! grep -q "source $DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"; then
         echo "source $DOTFILES_DIR/.my.bashrc" >> "$HOME/.bashrc"
@@ -96,6 +97,17 @@ if [ -f "$HOME/.bashrc" ]; then
 else
     ln -sf "$DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"
     echo "  Added .bashrc"
+fi
+
+# -- Claude -------------------------------------------------------
+
+section "Configuring Claude"
+
+if ! claude mcp list 2>/dev/null | grep -q "my-linear"; then
+    claude mcp add --scope user --transport http my-linear https://mcp.linear.app/mcp
+fi
+if ! claude mcp list 2>/dev/null | grep -q "my-notion"; then
+    claude mcp add --scope user --transport http my-notion https://mcp.notion.com/mcp
 fi
 
 section "Done"
