@@ -49,6 +49,9 @@ case "$OS" in
             chmod +x yq
             run mv yq /usr/local/bin/yq
         fi
+        if ! has claude; then
+            curl -fsSL https://claude.ai/install.sh | bash
+        fi
     ;;
 esac
 
