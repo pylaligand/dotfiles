@@ -34,6 +34,8 @@ case "$OS" in
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         fi
         brew bundle --file="$DOTFILES_DIR/Brewfile"
+        # Update PATH for further configuration of Homebrew-installed tools.
+        export PATH="/opt/homebrew/bin:$PATH"
     ;;
     Linux)
         # Packages available in most distros
@@ -85,18 +87,30 @@ echo "  starship.toml -> $DOTFILES_DIR/.config/starship.toml"
 section "Configuring bash"
 
 if [ "$(basename "$SHELL")" != "bash" ]; then
-    section "Setting bash as default shell"
+    echo "Setting bash as default shell"
     run chsh -s "$(command -v bash)" "$USER"
 fi
 
-if [ -f "$HOME/.bashrc" ]; then
-    if ! grep -q "source $DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"; then
-        echo "source $DOTFILES_DIR/.my.bashrc" >> "$HOME/.bashrc"
-        echo "  Added include line to .bashrc"
+if [ "$(readlink "$HOME/.bashrc")" != "$DOTFILES_DIR/.my.bashrc" ]; then
+    if [ -f "$HOME/.bashrc" ]; then
+        if ! grep -q "source $DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"; then
+            echo "source $DOTFILES_DIR/.my.bashrc" >> "$HOME/.bashrc"
+            echo "  Added include line to .bashrc"
+        fi
+    else
+        ln -sf "$DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"
+        echo "  Added .bashrc"
     fi
-else
-    ln -sf "$DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"
-    echo "  Added .bashrc"
+fi
+
+# macOS terminals (Terminal.app, iTerm2) source .bash_profile, not .bashrc.
+# Create .bash_profile that sources .bashrc so our config is always loaded.
+if [ "$OS" = "Darwin" ] && [ ! -f "$HOME/.bash_profile" ]; then
+    cat > "$HOME/.bash_profile" <<'EOF'
+# Source .bashrc if it exists (keeps one config for both login and non-login shells)
+[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+EOF
+    echo "  Added .bash_profile"
 fi
 
 # -- Claude -------------------------------------------------------

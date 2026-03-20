@@ -1,4 +1,6 @@
-cask 'claude'
+brew 'bash-completion'
+cask 'claude-code'
+brew 'git'
 brew 'jq'
 brew 'starship'
 brew 'yq'
