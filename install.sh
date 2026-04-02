@@ -51,6 +51,14 @@ case "$OS" in
             chmod +x yq
             run mv yq /usr/local/bin/yq
         fi
+        if ! has gh; then
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+                | run tee /usr/share/keyrings/githubcli-archive-keyring.gpg >/dev/null
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+                | run tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+            run apt-get update
+            run apt-get install -y gh
+        fi
         if ! has claude; then
             curl -fsSL https://claude.ai/install.sh | bash
         fi
@@ -122,9 +130,6 @@ if ! claude mcp list 2>/dev/null | grep -q "my-linear"; then
 fi
 if ! claude mcp list 2>/dev/null | grep -q "my-notion"; then
     claude mcp add --scope user --transport http my-notion https://mcp.notion.com/mcp
-fi
-if ! claude mcp list 2>/dev/null | grep -q "my-github"; then
-    claude mcp add --scope user --transport http my-github https://api.githubcopilot.com/mcp
 fi
 
 section "Done"
