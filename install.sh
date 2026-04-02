@@ -123,6 +123,9 @@ fi
 if ! claude mcp list 2>/dev/null | grep -q "my-notion"; then
     claude mcp add --scope user --transport http my-notion https://mcp.notion.com/mcp
 fi
+if ! claude mcp list 2>/dev/null | grep -q "my-github"; then
+    claude mcp add --scope user --transport http my-github https://api.githubcopilot.com/mcp
+fi
 
 section "Done"
 echo "Please restart your shell."
