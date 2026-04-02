@@ -1,5 +1,6 @@
 brew 'bash-completion'
 cask 'claude-code'
+brew 'gh'
 brew 'git'
 brew 'jq'
 brew 'starship'
