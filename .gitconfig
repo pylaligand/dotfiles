@@ -5,6 +5,7 @@
     po = "push origin HEAD"
     pof = "push --force origin HEAD"
     st = "show HEAD --stat --format=''"
+    stu = "diff HEAD --stat"
     up = "branch --set-upstream-to=origin/main"
 
 [core]
