@@ -20,9 +20,9 @@ if [ "$OS" = "Darwin" ]; then
   alias grep='grep --color=auto'
 fi
 
-if [ "${CODESPACES-}" = "true" ]; then
-  alias refresh_dotfiles="git -C /workspaces/.codespaces/.persistedshare/dotfiles pull --rebase"
-fi
+export DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+alias dotfiles_install="$DOTFILES_DIR/install.sh"
+alias dotfiles_refresh="git -C $DOTFILES_DIR pull --rebase"
 
 # ── Initialization ────────────────────────────────────────────---
 
