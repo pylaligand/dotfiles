@@ -20,6 +20,10 @@ if [ "$OS" = "Darwin" ]; then
   alias grep='grep --color=auto'
 fi
 
+if [ "${CODESPACES-}" = "true" ]; then
+  alias update_dotfiles="git -C /workspaces/.codespaces/.persistedshare/dotfiles pull --rebase"
+fi
+
 # ── Initialization ────────────────────────────────────────────---
 
 # Initialize Starship prompt.
