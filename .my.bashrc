@@ -13,7 +13,6 @@ if [ "$OS" = "Darwin" ]; then
   export PATH="/opt/homebrew/bin:$PATH"
 fi
 
-
 # ── Aliases ────────────────────────────────────────────----------
 
 if [ "$OS" = "Darwin" ]; then
@@ -24,11 +23,14 @@ fi
 
 _source="${BASH_SOURCE[0]}"
 while [ -L "$_source" ]; do
+  _dir="$(cd "$(dirname "$_source")" && pwd)"
   _source="$(readlink "$_source")"
+  # Resolve relative symlink targets against the symlink's directory.
+  [[ "$_source" != /* ]] && _source="$_dir/$_source"
 done
 DOTFILES_DIR="$(cd "$(dirname "$_source")" && pwd)"
 export DOTFILES_DIR
-unset _source
+unset _source _dir
 alias dotfiles_install='$DOTFILES_DIR/install.sh'
 alias dotfiles_refresh='git -C $DOTFILES_DIR pull --rebase'
 
