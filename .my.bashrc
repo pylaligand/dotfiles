@@ -21,7 +21,7 @@ if [ "$OS" = "Darwin" ]; then
 fi
 
 if [ "${CODESPACES-}" = "true" ]; then
-  alias update_dotfiles="git -C /workspaces/.codespaces/.persistedshare/dotfiles pull --rebase"
+  alias refresh_dotfiles="git -C /workspaces/.codespaces/.persistedshare/dotfiles pull --rebase"
 fi
 
 # ── Initialization ────────────────────────────────────────────---
