@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 OS="$(uname -s)"
 
 # ── Env variables ────────────────────────────────────────────
@@ -20,9 +22,15 @@ if [ "$OS" = "Darwin" ]; then
   alias grep='grep --color=auto'
 fi
 
-export DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-alias dotfiles_install="$DOTFILES_DIR/install.sh"
-alias dotfiles_refresh="git -C $DOTFILES_DIR pull --rebase"
+_source="${BASH_SOURCE[0]}"
+while [ -L "$_source" ]; do
+  _source="$(readlink "$_source")"
+done
+DOTFILES_DIR="$(cd "$(dirname "$_source")" && pwd)"
+export DOTFILES_DIR
+unset _source
+alias dotfiles_install='$DOTFILES_DIR/install.sh'
+alias dotfiles_refresh='git -C $DOTFILES_DIR pull --rebase'
 
 # ── Initialization ────────────────────────────────────────────---
 
