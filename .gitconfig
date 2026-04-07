@@ -5,6 +5,7 @@
     nb = "!git checkout -b $1 origin/main #"
     po = "push origin HEAD"
     pof = "push --force origin HEAD"
+    rbi = "pull --rebase=interactive"
     st = "show HEAD --stat --format=''"
     stu = "diff HEAD --stat"
     up = "branch --set-upstream-to=origin/main"
