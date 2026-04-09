@@ -34,6 +34,8 @@ unset _source _dir
 alias dotfiles_install='$DOTFILES_DIR/install.sh'
 alias dotfiles_refresh='git -C $DOTFILES_DIR pull --rebase'
 
+alias kout='kubectl config unset current-context'
+
 # ── Initialization ────────────────────────────────────────────---
 
 # Initialize Starship prompt.
