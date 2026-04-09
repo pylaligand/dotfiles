@@ -36,6 +36,14 @@ alias dotfiles_refresh='git -C $DOTFILES_DIR pull --rebase'
 
 alias kout='kubectl config unset current-context'
 
+# ── Git ────────────────────────────────────────────--------------
+
+if [ "${CODESPACES:-}" = "true" ]; then
+  # Use gh OAuth token for git auth, overriding Codespaces' limited GITHUB_TOKEN.
+  export GH_TOKEN
+  GH_TOKEN="$(GITHUB_TOKEN='' gh auth token -h github.com 2>/dev/null)"
+fi
+
 # ── Initialization ────────────────────────────────────────────---
 
 # Initialize Starship prompt.
@@ -44,6 +52,7 @@ eval "$(starship init bash)"
 if [ "$OS" = "Darwin" ]; then
   # Enable bash completion for Homebrew-installed tools.
   if [ -f "/opt/homebrew/etc/bash_completion" ]; then
+    # shellcheck source=/dev/null
     . "/opt/homebrew/etc/bash_completion"
   fi
 fi
