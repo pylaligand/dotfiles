@@ -5,7 +5,7 @@
     lo = "log --oneline --decorate"
     nb = "!git fetch origin && git checkout -b $1 origin/main #"
     po = "push origin HEAD"
-    pof = "push origin HEAD --force"
+    pof = "push origin HEAD --force-with-lease"
     pr = "pull --rebase"
     pri = "pull --rebase=interactive"
     st = "show HEAD --stat --format=''"
