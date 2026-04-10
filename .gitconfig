@@ -3,7 +3,7 @@
     can = "commit --amend --no-edit"
     cmp = "!git checkout main && git pull --rebase"
     lo = "log --oneline --decorate"
-    nb = "!git checkout -b $1 origin/main #"
+    nb = "!git fetch origin && git checkout -b $1 origin/main #"
     po = "push origin HEAD"
     pof = "push origin HEAD --force"
     pr = "pull --rebase"
