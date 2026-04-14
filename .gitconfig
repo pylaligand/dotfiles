@@ -8,6 +8,7 @@
     pof = "push origin HEAD --force-with-lease"
     pr = "pull --rebase"
     pri = "pull --rebase=interactive"
+    rh = "reset --hard"
     st = "show HEAD --stat --format=''"
     stu = "diff HEAD --stat"
     up = "branch --set-upstream-to=origin/main"
