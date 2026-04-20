@@ -90,19 +90,6 @@ mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}"
 ln -sf "$DOTFILES_DIR/.config/starship.toml" "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
 echo "  starship.toml -> $DOTFILES_DIR/.config/starship.toml"
 
-# ── Git ────────────────────────────────────────────--------------
-
-section "Configuring Git"
-
-# In Codespaces, gh auth login's "Authenticate Git" option silently skips setting up
-# the Git credential helper when it detects the existing system-level helper. That
-# system helper serves the Codespace's limited GITHUB_TOKEN, which can't access repos
-# outside the Codespace. Force the setup so gh's OAuth token is used instead.
-if has gh && [ "${CODESPACES:-}" = "true" ]; then
-    GITHUB_TOKEN='' gh auth setup-git 2>/dev/null
-    echo "  Configured gh Git credential helper"
-fi
-
 # ── Set default shell ────────────────────────────────────────────
 
 section "Configuring bash"
