@@ -2,10 +2,11 @@
 
 ## In Codespaces
 
+Either activate the setting to automatically install dotfiles or run:
+
 ```sh
 cd /workspaces
-GITHUB_TOKEN='' gh auth login
-GITHUB_TOKEN='' gh repo clone dotfiles
+gh repo clone dotfiles
 dotfiles/install.sh
 <open new terminal>
 ```
