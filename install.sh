@@ -40,7 +40,7 @@ case "$OS" in
     Linux)
         # Packages available in most distros
         run apt-get update
-        run apt-get install -y jq
+        run apt-get install -y direnv jq
 
         # Tools installed via their own installers (not in apt or too old)
         if ! has starship; then

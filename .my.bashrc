@@ -56,3 +56,5 @@ if [ "$OS" = "Darwin" ]; then
     . "/opt/homebrew/etc/bash_completion"
   fi
 fi
+
+eval "$(direnv hook bash)"
