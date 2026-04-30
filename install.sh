@@ -68,7 +68,7 @@ esac
 # ── Persist Claude state across Codespace rebuilds ───────────────
 
 if [ "${CODESPACES:-}" = "true" ]; then
-    section "Relocating ~/.claude to /workspaces/.claude (Codespaces)"
+    section "Configuring Claude (Codespaces only)"
 
     PERSISTENT_CLAUDE_DIR="/workspaces/.claude"
     mkdir -p "$PERSISTENT_CLAUDE_DIR"
@@ -85,6 +85,21 @@ if [ "${CODESPACES:-}" = "true" ]; then
 
     ln -sfn "$PERSISTENT_CLAUDE_DIR" "$HOME/.claude"
     echo "  \$HOME/.claude -> $PERSISTENT_CLAUDE_DIR"
+
+    # Same treatment for ~/.claude.json (MCP list, oauthAccount, trust
+    # acknowledgments, onboarding flags). Persistent file wins on rebuild.
+    PERSISTENT_CLAUDE_JSON="/workspaces/.claude.json"
+    if [ -f "$HOME/.claude.json" ] && [ ! -L "$HOME/.claude.json" ]; then
+        if [ ! -e "$PERSISTENT_CLAUDE_JSON" ]; then
+            mv "$HOME/.claude.json" "$PERSISTENT_CLAUDE_JSON"
+            echo "  Migrated \$HOME/.claude.json -> $PERSISTENT_CLAUDE_JSON"
+        else
+            rm "$HOME/.claude.json"
+        fi
+    fi
+    [ -e "$PERSISTENT_CLAUDE_JSON" ] || : > "$PERSISTENT_CLAUDE_JSON"
+    ln -sf "$PERSISTENT_CLAUDE_JSON" "$HOME/.claude.json"
+    echo "  \$HOME/.claude.json -> $PERSISTENT_CLAUDE_JSON"
 fi
 
 # ── Symlink dotfiles ─────────────────────────────────────────────
@@ -145,7 +160,7 @@ fi
 
 # -- Claude -------------------------------------------------------
 
-section "Configuring Claude"
+section "Adding Claude plugins"
 
 if ! claude mcp list 2>/dev/null | grep -q "my-linear"; then
     claude mcp add --scope user --transport http my-linear https://mcp.linear.app/mcp
