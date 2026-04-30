@@ -65,6 +65,28 @@ case "$OS" in
     ;;
 esac
 
+# ── Persist Claude state across Codespace rebuilds ───────────────
+
+if [ "${CODESPACES:-}" = "true" ]; then
+    section "Relocating ~/.claude to /workspaces/.claude (Codespaces)"
+
+    PERSISTENT_CLAUDE_DIR="/workspaces/.claude"
+    mkdir -p "$PERSISTENT_CLAUDE_DIR"
+
+    # If $HOME/.claude is a real directory (first migration, or a fresh
+    # rebuild where Claude already wrote defaults), merge its contents
+    # into the persistent dir without clobbering existing files, then
+    # replace it with a symlink.
+    if [ -d "$HOME/.claude" ] && [ ! -L "$HOME/.claude" ]; then
+        cp -a --update=none "$HOME/.claude/." "$PERSISTENT_CLAUDE_DIR/"
+        rm -rf "$HOME/.claude"
+        echo "  Migrated \$HOME/.claude -> $PERSISTENT_CLAUDE_DIR"
+    fi
+
+    ln -sfn "$PERSISTENT_CLAUDE_DIR" "$HOME/.claude"
+    echo "  \$HOME/.claude -> $PERSISTENT_CLAUDE_DIR"
+fi
+
 # ── Symlink dotfiles ─────────────────────────────────────────────
 
 section "Symlinking dotfiles"
