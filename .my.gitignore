@@ -1,2 +1,5 @@
 # To stash local config files and notes.
-py-local/
+.persist/
+
+# Claude state persisted across local devcontainer rebuilds.
+.claude-global/
