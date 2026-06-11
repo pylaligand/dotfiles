@@ -18,3 +18,7 @@
 
 [rebase]
     autoStash = true
+
+[user]
+    name = P.Y. Laligand
+    email = py.laligand@gmail.com
