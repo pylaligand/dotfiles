@@ -65,12 +65,24 @@ case "$OS" in
     ;;
 esac
 
-# ── Persist Claude state across Codespace rebuilds ───────────────
+# ── Persist Claude state across devcontainer rebuilds ─────────────────────────
 
+PERSIST_ROOT=""
 if [ "${CODESPACES:-}" = "true" ]; then
-    section "Configuring Claude (Codespaces only)"
+    # Codespaces persist all of /workspaces.
+    PERSIST_ROOT="/workspaces"
+else
+    # Local devcontainers only persist /workspaces/<repo>.
+    # The repo is the one bind mount under /workspaces; find its mount point.
+    REPO_ROOT="$(awk '$5 ~ /^\/workspaces\// {print $5; exit}' /proc/self/mountinfo 2>/dev/null)"
+    [ -n "$REPO_ROOT" ] && PERSIST_ROOT="$REPO_ROOT/.claude-global"
+fi
 
-    PERSISTENT_CLAUDE_DIR="/workspaces/.claude"
+if [ -n "$PERSIST_ROOT" ]; then
+    section "Persisting Claude state -> $PERSIST_ROOT"
+    mkdir -p "$PERSIST_ROOT"
+
+    PERSISTENT_CLAUDE_DIR="$PERSIST_ROOT/.claude"
     mkdir -p "$PERSISTENT_CLAUDE_DIR"
 
     # If $HOME/.claude is a real directory (first migration, or a fresh
@@ -88,7 +100,7 @@ if [ "${CODESPACES:-}" = "true" ]; then
 
     # Same treatment for ~/.claude.json (MCP list, oauthAccount, trust
     # acknowledgments, onboarding flags). Persistent file wins on rebuild.
-    PERSISTENT_CLAUDE_JSON="/workspaces/.claude.json"
+    PERSISTENT_CLAUDE_JSON="$PERSIST_ROOT/.claude.json"
     if [ -f "$HOME/.claude.json" ] && [ ! -L "$HOME/.claude.json" ]; then
         if [ ! -e "$PERSISTENT_CLAUDE_JSON" ]; then
             mv "$HOME/.claude.json" "$PERSISTENT_CLAUDE_JSON"
