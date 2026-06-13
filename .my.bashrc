@@ -59,6 +59,7 @@ done
 DOTFILES_DIR="$(cd "$(dirname "$_source")" && pwd)"
 export DOTFILES_DIR
 unset _source _dir
+alias dotfiles_go='cd "$DOTFILES_DIR"'
 alias dotfiles_install='$DOTFILES_DIR/install.sh'
 alias dotfiles_refresh='git -C $DOTFILES_DIR pull --rebase'
 
