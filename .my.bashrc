@@ -19,6 +19,34 @@ if [ "$OS" = "Darwin" ]; then
   alias ls='ls --color=auto'
   alias ll='ls -alF'
   alias grep='grep --color=auto'
+
+  # Strip the Gatekeeper quarantine flag from a CLI so macOS stops blocking it.
+  unquarantine() {
+    if [ -z "$1" ]; then
+      echo "usage: unquarantine <command>" >&2
+      return 1
+    fi
+    local target dir cleared=0
+    target="$(command -v "$1")" || {
+      echo "unquarantine: '$1' not found in PATH" >&2
+      return 1
+    }
+    while [ -L "$target" ]; do
+      dir="$(cd "$(dirname "$target")" && pwd)"
+      target="$(readlink "$target")"
+      [[ "$target" != /* ]] && target="$dir/$target"
+    done
+    dir="$(dirname "$target")"
+    while IFS= read -r -d '' f; do
+      xattr -p com.apple.quarantine "$f" >/dev/null 2>&1 || continue
+      xattr -d com.apple.quarantine "$f" && cleared=$((cleared + 1))
+    done < <(find "$dir" -print0)
+    if [ "$cleared" -eq 0 ]; then
+      echo "unquarantine: '$1' had no quarantine flag set"
+    else
+      echo "unquarantine: cleared quarantine flag from $cleared file(s) under $dir"
+    fi
+  }
 fi
 
 _source="${BASH_SOURCE[0]}"
