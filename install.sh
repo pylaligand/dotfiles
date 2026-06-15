@@ -118,7 +118,7 @@ fi
 
 section "Symlinking dotfiles"
 
-for file in .claude/CLAUDE.md .my.gitignore; do
+for file in .claude/CLAUDE.md .config/git/ignore; do
     mkdir -p "$(dirname "$HOME/$file")"
     ln -sf "$DOTFILES_DIR/$file" "$HOME/$file"
     echo "  $file -> $DOTFILES_DIR/$file"
