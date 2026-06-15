@@ -13,9 +13,6 @@
     stu = "diff HEAD --stat"
     up = "branch --set-upstream-to=origin/main"
 
-[core]
-    excludesFile = ~/.my.gitignore
-
 [rebase]
     autoStash = true
 
