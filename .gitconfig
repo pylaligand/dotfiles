@@ -13,6 +13,16 @@
     stu = "diff HEAD --stat"
     up = "branch --set-upstream-to=origin/main"
 
+# Route github.com auth through gh so a single token (GH_TOKEN) serves both gh
+# and git. The empty `helper` resets the inherited list, clearing any existing
+# helper. `!gh` is resolved via PATH for portability across machines.
+[credential "https://gist.github.com"]
+    helper =
+    helper = !gh auth git-credential
+[credential "https://github.com"]
+    helper =
+    helper = !gh auth git-credential
+
 [rebase]
     autoStash = true
 
