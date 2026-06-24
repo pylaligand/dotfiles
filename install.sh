@@ -184,5 +184,8 @@ if ! claude mcp list 2>/dev/null | grep -q "my-whimsical"; then
     claude mcp add --scope user --transport http my-whimsical https://mcp.whimsical.com/mcp
 fi
 
+section "GitHub token"
+echo "Set GH_TOKEN via a direnv .envrc somewhere strategic (e.g. /workspaces)."
+
 section "Done"
 echo "Please restart your shell."
