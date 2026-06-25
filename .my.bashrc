@@ -79,3 +79,17 @@ if [ "$OS" = "Darwin" ]; then
 fi
 
 eval "$(direnv hook bash)"
+
+# Remind at startup if GH_TOKEN isn't configured for Claude — its non-interactive
+# shells don't see direnv, so the token must live in ~/.claude/settings.json.
+if command -v claude >/dev/null 2>&1; then
+  _claude_settings="$HOME/.claude/settings.json"
+  if command -v jq >/dev/null 2>&1; then
+    _gh_tok="$(jq -r '.env.GH_TOKEN // empty' "$_claude_settings" 2>/dev/null)"
+  else
+    _gh_tok="$(grep -oE '"GH_TOKEN"[[:space:]]*:[[:space:]]*"[^"]+"' "$_claude_settings" 2>/dev/null)"
+  fi
+  [ -z "$_gh_tok" ] &&
+    printf '\033[33m⚠ GH_TOKEN not set in ~/.claude/settings.json\033[0m — Claude gh/git use the limited platform token.\n' >&2
+  unset _claude_settings _gh_tok
+fi
