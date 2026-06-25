@@ -11,6 +11,10 @@ helper in `.gitconfig` routes `github.com` git auth through `gh`, which uses
 The platform-managed `GITHUB_TOKEN` is left alone — in Codespaces it's reserved
 for gpg commit signing.
 
+For **Claude Code**, set the same token statically in `~/.claude/settings.json`
+(`{"env": {"GH_TOKEN": "<PAT>"}}`) — its non-interactive shells don't see direnv.
+A terminal-start warning fires when `GH_TOKEN` is unset.
+
 ## In Codespaces
 
 Either activate the setting to automatically install dotfiles or run:

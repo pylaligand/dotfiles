@@ -185,7 +185,17 @@ if ! claude mcp list 2>/dev/null | grep -q "my-whimsical"; then
 fi
 
 section "GitHub token"
-echo "Set GH_TOKEN via a direnv .envrc somewhere strategic (e.g. /workspaces)."
+# Seed an empty GH_TOKEN slot in Claude's user settings so it's a one-field edit
+# (//= leaves an already-filled token untouched on re-runs).
+if has jq; then
+    mkdir -p "$HOME/.claude"
+    CLAUDE_SETTINGS="$HOME/.claude/settings.json"
+    [ -f "$CLAUDE_SETTINGS" ] || echo '{}' > "$CLAUDE_SETTINGS"
+    tmp_settings="$(mktemp)"
+    jq '.env.GH_TOKEN //= ""' "$CLAUDE_SETTINGS" > "$tmp_settings" && mv "$tmp_settings" "$CLAUDE_SETTINGS"
+fi
+echo "Terminal: set GH_TOKEN via a direnv .envrc (e.g. /workspaces/.envrc)."
+echo 'Claude:   fill .env.GH_TOKEN in ~/.claude/settings.json.'
 
 section "Done"
 echo "Please restart your shell."
