@@ -192,7 +192,8 @@ if has jq; then
     CLAUDE_SETTINGS="$HOME/.claude/settings.json"
     [ -f "$CLAUDE_SETTINGS" ] || echo '{}' > "$CLAUDE_SETTINGS"
     tmp_settings="$(mktemp)"
-    jq '.env.GH_TOKEN //= ""' "$CLAUDE_SETTINGS" > "$tmp_settings" && mv "$tmp_settings" "$CLAUDE_SETTINGS"
+    jq '.env.GH_TOKEN //= ""' "$CLAUDE_SETTINGS" > "$tmp_settings"
+    jq '.env.CLAUDE_AFK_TIMEOUT_MS = "1000000"' "$tmp_settings" > "$CLAUDE_SETTINGS"
 fi
 echo "Terminal: set GH_TOKEN via a direnv .envrc (e.g. /workspaces/.envrc)."
 echo 'Claude:   fill .env.GH_TOKEN in ~/.claude/settings.json.'
