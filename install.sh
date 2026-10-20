@@ -59,6 +59,8 @@ case "$OS" in
             run apt-get update
             run apt-get install -y gh
         fi
+        # The native installer puts claude in ~/.local/bin.
+        export PATH="$HOME/.local/bin:$PATH"
         if ! has claude; then
             curl -fsSL https://claude.ai/install.sh | bash
         fi
