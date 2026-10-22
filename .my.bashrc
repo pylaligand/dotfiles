@@ -65,8 +65,6 @@ alias dotfiles_refresh='git -C $DOTFILES_DIR pull --rebase'
 
 alias kout='kubectl config unset current-context'
 
-alias stack_rebase='gh stack rebase --upstack'
-
 # ── Initialization ────────────────────────────────────────────---
 
 # Initialize Starship prompt.
