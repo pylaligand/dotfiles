@@ -186,16 +186,25 @@ if ! claude mcp list 2>/dev/null | grep -q "my-whimsical"; then
     claude mcp add --scope user --transport http my-whimsical https://mcp.whimsical.com/mcp
 fi
 
-section "GitHub token"
-# Seed an empty GH_TOKEN slot in Claude's user settings so it's a one-field edit
-# (//= leaves an already-filled token untouched on re-runs).
+section "Claude settings"
 if has jq; then
     mkdir -p "$HOME/.claude"
     CLAUDE_SETTINGS="$HOME/.claude/settings.json"
     [ -f "$CLAUDE_SETTINGS" ] || echo '{}' > "$CLAUDE_SETTINGS"
     tmp_settings="$(mktemp)"
-    jq '.env.GH_TOKEN //= ""' "$CLAUDE_SETTINGS" > "$tmp_settings"
-    jq '.env.CLAUDE_AFK_TIMEOUT_MS = "1000000"' "$tmp_settings" > "$CLAUDE_SETTINGS"
+    # Seed an empty GH_TOKEN slot in Claude's user settings so it's a one-field edit
+    # (//= leaves an already-filled token untouched on re-runs).
+    # cleanupPeriodDays: keep session transcripts ~forever.
+    jq '.env.GH_TOKEN //= ""' "$CLAUDE_SETTINGS" \
+        | jq '.env.CLAUDE_AFK_TIMEOUT_MS = "1000000"' \
+        | jq '.cleanupPeriodDays = 36500' > "$tmp_settings"
+    # sh has no pipefail: a failed jq above (e.g. malformed settings.json) leaves
+    # tmp empty with exit 0. Abort rather than wipe the settings with it.
+    if [ ! -s "$tmp_settings" ]; then
+        echo "Failed to update $CLAUDE_SETTINGS; left it unchanged." >&2
+        exit 1
+    fi
+    cat "$tmp_settings" > "$CLAUDE_SETTINGS"
 fi
 echo "Terminal: set GH_TOKEN via a direnv .envrc (e.g. /workspaces/.envrc)."
 echo 'Claude:   fill .env.GH_TOKEN in ~/.claude/settings.json.'
