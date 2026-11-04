@@ -206,8 +206,15 @@ if has jq; then
     fi
     cat "$tmp_settings" > "$CLAUDE_SETTINGS"
 fi
-echo "Terminal: set GH_TOKEN via a direnv .envrc (e.g. /workspaces/.envrc)."
-echo 'Claude:   fill .env.GH_TOKEN in ~/.claude/settings.json.'
+
+# -- gh CLI -------------------------------------------------------
+
+section "Configuring gh"
+if has gh; then
+    gh extension install github/gh-stack
+fi
 
 section "Done"
+echo "Terminal: set GH_TOKEN via a direnv .envrc (e.g. /workspaces/.envrc)."
+echo 'Claude:   fill .env.GH_TOKEN in ~/.claude/settings.json.'
 echo "Please restart your shell."
