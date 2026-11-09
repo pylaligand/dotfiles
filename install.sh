@@ -39,8 +39,8 @@ case "$OS" in
     ;;
     Linux)
         # Packages available in most distros
-        run apt-get update
-        run apt-get install -y direnv jq
+        run apt-get -o DPkg::Lock::Timeout=300 update
+        run apt-get -o DPkg::Lock::Timeout=300 install -y direnv jq
 
         # Tools installed via their own installers (not in apt or too old)
         if ! has starship; then
@@ -56,8 +56,8 @@ case "$OS" in
                 | run tee /usr/share/keyrings/githubcli-archive-keyring.gpg >/dev/null
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
                 | run tee /etc/apt/sources.list.d/github-cli.list >/dev/null
-            run apt-get update
-            run apt-get install -y gh
+            run apt-get -o DPkg::Lock::Timeout=300 update
+            run apt-get -o DPkg::Lock::Timeout=300 install -y gh
         fi
         # The native installer puts claude in ~/.local/bin.
         export PATH="$HOME/.local/bin:$PATH"
