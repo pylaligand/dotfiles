@@ -69,6 +69,9 @@ alias gs='gh stack'
 
 # ── Initialization ────────────────────────────────────────────---
 
+# Bypass initialization for non-interactive shells.
+[[ $- == *i* ]] || return 0
+
 # Initialize Starship prompt.
 eval "$(starship init bash)"
 
