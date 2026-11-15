@@ -67,6 +67,19 @@ alias kout='kubectl config unset current-context'
 
 alias gs='gh stack'
 
+# ── Paradev ─────────────────────────────────────────────────
+
+if [ -n "$SUPERSET_WORKSPACE_ID" ]; then
+  # Show a file in the workspace's editor sidebar. `panes open` resolves a
+  # relative path against the workspace root rather than the cwd, so resolve
+  # it here instead -- otherwise this opens the wrong file from a subdirectory.
+  pv-open() {
+    local path
+    path="$(realpath "$1")" || return 1
+    paradev panes open file "$path" --workspace "$SUPERSET_WORKSPACE_ID"
+  }
+fi
+
 # ── Initialization ────────────────────────────────────────────---
 
 # Bypass initialization for non-interactive shells.
