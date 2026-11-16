@@ -1,5 +1,9 @@
 # shellcheck shell=bash
 
+# Ensure that we initialize terminals exactly once.
+[ -n "$_MY_BASHRC_SOURCED" ] && return 0
+_MY_BASHRC_SOURCED=1
+
 OS="$(uname -s)"
 
 # ── Env variables ────────────────────────────────────────────
