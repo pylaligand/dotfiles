@@ -75,8 +75,8 @@ if [ "${CODESPACES:-}" = "true" ]; then
     PERSIST_ROOT="/workspaces"
 else
     # Local devcontainers only persist /workspaces/<repo>.
-    # The repo is the one bind mount under /workspaces; find its mount point.
-    REPO_ROOT="$(awk '$5 ~ /^\/workspaces\// {print $5; exit}' /proc/self/mountinfo 2>/dev/null)"
+    # The repo is the one bind mount under /workspaces; find its mount point, if any.
+    REPO_ROOT="$(awk '$5 ~ /^\/workspaces\// {print $5; exit}' /proc/self/mountinfo 2>/dev/null || true)"
     [ -n "$REPO_ROOT" ] && PERSIST_ROOT="$REPO_ROOT/.claude-global"
 fi
 
