@@ -65,10 +65,10 @@ For every specific issue (bug, smell, design concern, or risk):
 - Describe the problem concretely, with file and line references.
 - Present 2–3 options, including “do nothing” where that’s reasonable.
 - For each option, specify:
-  - Implementation effort
-  - Risk
-  - Impact on other code
-  - Maintenance burden
+    - Implementation effort
+    - Risk
+    - Impact on other code
+    - Maintenance burden
 - Give me your recommended option and why, mapped to my preferences above.
 - Then explicitly ask whether I agree or want to choose a different direction before proceeding.
 
@@ -101,6 +101,6 @@ Ask if I want one of two options:
 - NUMBER issues.
 - Give LETTERS for options.
 - When using `AskUserQuestion`, clearly label each option with:
-  - Issue NUMBER
-  - Option LETTER
+    - Issue NUMBER
+    - Option LETTER
 - Make the recommended option always the 1st option.

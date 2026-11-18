@@ -25,3 +25,19 @@ gh repo clone dotfiles
 dotfiles/install.sh
 <open new terminal>
 ```
+
+## Pre-commit checks
+
+[prek](https://prek.j178.dev) is used to enforce formatting rules:
+
+```sh
+# Homebrew (macOS or Linux)
+brew install prek
+
+# Linux without Homebrew
+curl --proto '=https' --tlsv1.2 -LsSf \
+    https://github.com/j178/prek/releases/latest/download/prek-installer.sh | sh
+
+prek install          # activate the git hook for this clone
+prek run --all-files  # check every tracked file on demand
+```
