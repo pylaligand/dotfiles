@@ -24,6 +24,21 @@ section() {
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 OS="$(uname -s)"
 
+# Prevent installing from a git worktree.
+if has git; then
+    # `worktree list` reports the main worktree first; outside a repo both
+    # values come back empty and the check is skipped.
+    main_tree="$(git -C "$DOTFILES_DIR" worktree list --porcelain 2>/dev/null | sed -n '1s/^worktree //p')"
+    this_tree="$(git -C "$DOTFILES_DIR" rev-parse --show-toplevel 2>/dev/null || true)"
+    if [ -n "$main_tree" ] && [ -n "$this_tree" ] && [ "$main_tree" != "$this_tree" ]; then
+        echo "install.sh: refusing to install from a linked worktree." >&2
+        echo "  here:            $this_tree" >&2
+        echo "  main checkout:   $main_tree" >&2
+        echo "  Re-run it from the main checkout." >&2
+        exit 1
+    fi
+fi
+
 # ── CLI tools ────────────────────────────────────────────────────
 
 section "Installing CLI tools"
@@ -151,14 +166,17 @@ if [ "$(basename "$SHELL")" != "bash" ]; then
 fi
 
 if [ "$(readlink "$HOME/.bashrc")" != "$DOTFILES_DIR/.my.bashrc" ]; then
-    if [ -f "$HOME/.bashrc" ]; then
+    # -f alone follows a symlink, so appending would write into whatever
+    # checkout the link points at. Only append to a real file.
+    if [ -f "$HOME/.bashrc" ] && [ ! -L "$HOME/.bashrc" ]; then
         if ! grep -q "source $DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"; then
             echo "source $DOTFILES_DIR/.my.bashrc" >> "$HOME/.bashrc"
             echo "  Added include line to .bashrc"
         fi
     else
-        ln -sf "$DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"
-        echo "  Added .bashrc"
+        # Missing, or a symlink aimed at another checkout: repoint it.
+        ln -sfn "$DOTFILES_DIR/.my.bashrc" "$HOME/.bashrc"
+        echo "  Linked .bashrc -> $DOTFILES_DIR/.my.bashrc"
     fi
 fi
 

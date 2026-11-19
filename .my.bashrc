@@ -9,7 +9,7 @@ OS="$(uname -s)"
 # ── Env variables ────────────────────────────────────────────
 
 export EDITOR="nano"
-export PATH=".:$PATH"
+export PATH="$PATH:."
 
 if [ "$OS" = "Darwin" ]; then
     # Disable opening message.
