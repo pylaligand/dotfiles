@@ -67,6 +67,7 @@ alias dotfiles_go='cd "$DOTFILES_DIR"'
 alias dotfiles_install='$DOTFILES_DIR/install.sh'
 alias dotfiles_refresh='git -C $DOTFILES_DIR pull --rebase'
 
+alias k='kubectl'
 alias kout='kubectl config unset current-context'
 
 alias gs='gh stack'
@@ -98,6 +99,14 @@ if [ "$OS" = "Darwin" ]; then
         # shellcheck source=/dev/null
         . "/opt/homebrew/etc/bash_completion"
     fi
+fi
+
+# Give the `k` alias kubectl's own completion. On macOS the block above already
+# preloaded it via bash_completion.d; elsewhere bash-completion lazy-loads by
+# command name and never finds it under an alias, so load it by hand.
+if command -v kubectl >/dev/null 2>&1; then
+    declare -F __start_kubectl >/dev/null || eval "$(kubectl completion bash)"
+    eval "$(complete -p kubectl 2>/dev/null | sed 's/kubectl$/k/')"
 fi
 
 eval "$(direnv hook bash)"
