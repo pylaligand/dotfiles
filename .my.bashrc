@@ -89,7 +89,7 @@ if [ -n "$SUPERSET_WORKSPACE_ID" ]; then
                 file="$SUPERSET_WORKSPACE_PATH/${file#"$root"/}"
             fi
         fi
-        paradev panes open file "$file" --workspace "$SUPERSET_WORKSPACE_ID"
+        paradev panes open file "$file" --workspace "$SUPERSET_WORKSPACE_ID" >/dev/null
     }
 fi
 
