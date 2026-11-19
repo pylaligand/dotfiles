@@ -79,9 +79,17 @@ if [ -n "$SUPERSET_WORKSPACE_ID" ]; then
     # relative path against the workspace root rather than the cwd, so resolve
     # it here instead -- otherwise this opens the wrong file from a subdirectory.
     pv-open() {
-        local path
-        path="$(realpath "$1")" || return 1
-        paradev panes open file "$path" --workspace "$SUPERSET_WORKSPACE_ID"
+        local file root
+        file="$(realpath -- "$1")" || return 1
+        # Hand Paradev the workspace root spelled the way *it* spells it, otherwise
+        # it may choke on casing.
+        if [ -n "$SUPERSET_WORKSPACE_PATH" ]; then
+            root="$(realpath -- "$SUPERSET_WORKSPACE_PATH")"
+            if [ "${file#"$root"/}" != "$file" ]; then
+                file="$SUPERSET_WORKSPACE_PATH/${file#"$root"/}"
+            fi
+        fi
+        paradev panes open file "$file" --workspace "$SUPERSET_WORKSPACE_ID"
     }
 fi
 
