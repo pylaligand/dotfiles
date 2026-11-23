@@ -15,6 +15,7 @@ if [ "$OS" = "Darwin" ]; then
     # Disable opening message.
     export BASH_SILENCE_DEPRECATION_WARNING=1
     export PATH="/opt/homebrew/bin:$PATH"
+    export LANG="en_GB.UTF-8"
 fi
 
 # ── Aliases ────────────────────────────────────────────----------
