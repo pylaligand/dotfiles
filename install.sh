@@ -160,9 +160,28 @@ echo "  starship.toml -> $DOTFILES_DIR/.config/starship.toml"
 
 section "Configuring bash"
 
-if [ "$(basename "$SHELL")" != "bash" ]; then
-    echo "Setting bash as default shell"
-    run chsh -s "$(command -v bash)" "$USER"
+# Set the default shell on macOS which runs an older version of bash.
+if [ "$OS" = "Darwin" ]; then
+    BASH_PATH="$(command -v bash)"
+    if [ "$SHELL" != "$BASH_PATH" ]; then
+        echo "Setting $BASH_PATH as default shell"
+        # chsh refuses any shell that is not listed in /etc/shells.
+        if ! grep -qxF "$BASH_PATH" /etc/shells 2>/dev/null; then
+            echo "$BASH_PATH" | run tee -a /etc/shells >/dev/null
+        fi
+        # Don't abort the rest of the install if chsh fails.
+        run chsh -s "$BASH_PATH" "$USER" ||
+            echo "  chsh failed; set the login shell to $BASH_PATH manually." >&2
+    fi
+
+    # Terminal.app has its own "Shells open with" preference that overrides the
+    # login shell, so chsh alone does not change what it launches.
+    TERMINAL_SHELL="$(defaults read com.apple.Terminal Shell 2>/dev/null || true)"
+    if [ -n "$TERMINAL_SHELL" ] && [ "$TERMINAL_SHELL" != "$BASH_PATH" ]; then
+        echo "  Terminal.app is pinned to $TERMINAL_SHELL, overriding the login shell."
+        echo "  Set Terminal > Settings > General > 'Shells open with' to 'Default"
+        echo "  login shell', then open a new window."
+    fi
 fi
 
 if [ "$(readlink "$HOME/.bashrc")" != "$DOTFILES_DIR/.my.bashrc" ]; then
