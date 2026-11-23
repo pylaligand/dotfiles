@@ -101,6 +101,17 @@ fi
 # Initialize Starship prompt.
 eval "$(starship init bash)"
 
+# A bare Enter runs no command, so bash keeps $? from the previous one and the
+# prompt character stays red. Starship clears its ready flag only when a real
+# command runs, so an untouched flag means nothing ran.
+_starship_blank_line_status() {
+    if [ "${STARSHIP_PREEXEC_READY:-}" = "true" ]; then
+        STARSHIP_CMD_STATUS=0
+        STARSHIP_PIPE_STATUS=(0)
+    fi
+}
+starship_precmd_user_func="_starship_blank_line_status"
+
 if [ "$OS" = "Darwin" ]; then
     # Enable bash completion for Homebrew-installed tools.
     if [ -f "/opt/homebrew/etc/bash_completion" ]; then
