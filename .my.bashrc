@@ -73,6 +73,61 @@ alias kout='kubectl config unset current-context'
 
 alias gs='gh stack'
 
+# Clean up after a stack has merged: stop tracking the stack containing the
+# given branch and delete its local branches.
+gs-delete() {
+    if [ -z "$1" ]; then
+        echo "usage: gs-delete <branch>" >&2
+        return 1
+    fi
+    local state stack number branches unsubmitted ids=() id states branch status=0
+
+    # `gh stack unstack` only takes a stack number, so look it up in the local state.
+    state="$(git rev-parse --git-common-dir)/gh-stack" || return 1
+    if [ ! -f "$state" ]; then
+        echo "gs-delete: no gh-stack state in this repository" >&2
+        return 1
+    fi
+    stack="$(jq -c --arg b "$1" \
+        '.stacks[] | select(any(.branches[]; .branch == $b))' "$state")" || return 1
+    if [ -z "$stack" ]; then
+        echo "gs-delete: no stack contains branch '$1'" >&2
+        return 1
+    fi
+    if [[ "$stack" == *$'\n'* ]]; then
+        echo "gs-delete: branch '$1' is in several stacks:" \
+            "$(jq -rs 'map(.number | tostring) | join(", ")' <<<"$stack")" >&2
+        return 1
+    fi
+    number="$(jq -r '.number' <<<"$stack")"
+    branches="$(jq -r '.branches[].branch' <<<"$stack")"
+
+    # Only clean up merged stacks. Ask GitHub: the state's own `merged` flags go stale.
+    unsubmitted="$(jq -r '.branches[] | select(.pullRequest.id == null) | .branch' <<<"$stack")"
+    if [ -n "$unsubmitted" ]; then
+        echo "gs-delete: stack $number has branches without a PR: ${unsubmitted//$'\n'/, }" >&2
+        return 1
+    fi
+    while IFS= read -r id; do
+        ids+=(-f "ids[]=$id")
+    done < <(jq -r '.branches[].pullRequest.id' <<<"$stack")
+    states="$(gh api graphql "${ids[@]}" --jq '[.data.nodes[].state] | unique | join(", ")' \
+        -f query='query($ids: [ID!]!) { nodes(ids: $ids) { ... on PullRequest { state } } }')" || return 1
+    if [ "$states" != "MERGED" ]; then
+        echo "gs-delete: stack $number is not fully merged (PR states: $states)" >&2
+        return 1
+    fi
+
+    # GitHub refuses to unstack merged PRs, so this only ever acts locally.
+    gh stack unstack "$number" --local || return 1
+    while IFS= read -r branch; do
+        # Some may already be gone; git refuses those checked out in a worktree.
+        git show-ref --verify --quiet "refs/heads/$branch" || continue
+        git branch -D "$branch" || status=1
+    done <<<"$branches"
+    return "$status"
+}
+
 # ── Paradev ─────────────────────────────────────────────────
 
 if [ -n "$SUPERSET_WORKSPACE_ID" ]; then
